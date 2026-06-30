@@ -2,8 +2,8 @@
 version: 1
 project:
   id: 66b6d8f1-f60d-4c97-ae77-ef9124afdea1
-  # title:
-  # description:
+  title: Meditatio
+  description: Personal notes on topics of interests.
   # keywords: []
   # authors: []
   github: https://github.com/doctrino/meditatio
