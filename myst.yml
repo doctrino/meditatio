@@ -18,8 +18,7 @@ project:
     - file: statistics/index.md
       children:
         - file: statistics/skewed_distribution.ipynb
-        - file: statistics/skewed_mle.ipynb
-
+        - file: statistics/simulation.ipynb
 site:
   template: book-theme
   # options:
