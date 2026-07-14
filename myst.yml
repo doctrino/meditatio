@@ -15,7 +15,10 @@ project:
     - file: calculus/index.md
       children:
         - file: calculus/fourier.ipynb
-
+    - file: statistics/index.md
+      children:
+        - file: statistics/skewed_distribution.ipynb
+        - file: statistics/simulation.ipynb
 site:
   template: book-theme
   # options:
