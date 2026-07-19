@@ -20,12 +20,11 @@ project:
         - file: statistics/skewed_distribution.ipynb
         - file: statistics/simulation.ipynb
         - file: statistics/simulation_physical.ipynb
+  plugins:
+    - type: javascript
+      path: plugins/image-zoom.mjs
 site:
   template: book-theme
   # options:
   #   favicon: favicon.ico
   #   logo: site_logo.png
-
-sphinx:
-  extra_extensions:
-    - teachbooks_zoomies
