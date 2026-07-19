@@ -8,18 +8,23 @@
    executes them). The only supported customization hook is a CSS file.
    ----------------------------------------------------------------------- */
 
-/* 1. Cursor + subtle affordance on every zoomable image
-   -----------------------------------------------------
-   `figure img`         → images from MyST/MD `image` directives.
-   `.image-zoom-link`   → wrapper added by plugins/image-zoom.mjs.
-   `.jupyter-outputs img`, `.cell-output img` → matplotlib / notebook figs
-   (book-theme uses one of these class names depending on version).       */
+/* Selector groups
+   ---------------
+   `figure img`                       → MyST/MD `image` / `figure` directives.
+   `.image-zoom-link img`             → plugin-wrapped author images.
+   `img.zoomable-image`               → plugin-tagged author images.
+   `[data-name="safe-output-image"] img`,
+   `[data-name="outputs-container"] img`
+                                      → matplotlib / notebook cell outputs
+                                        (book-theme wraps them in these
+                                        data-name'd divs).                 */
+
+/* 1. Cursor + subtle affordance on every zoomable image                   */
 figure img,
 .image-zoom-link img,
 img.zoomable-image,
-.jupyter-outputs img,
-.cell-output img,
-.output img {
+[data-name="safe-output-image"] img,
+[data-name="outputs-container"] img {
   cursor: zoom-in;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   transform-origin: center center;
@@ -30,9 +35,8 @@ img.zoomable-image,
 figure img:hover,
 .image-zoom-link img:hover,
 img.zoomable-image:hover,
-.jupyter-outputs img:hover,
-.cell-output img:hover,
-.output img:hover {
+[data-name="safe-output-image"] img:hover,
+[data-name="outputs-container"] img:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   transform: scale(1.02);
 }
@@ -44,9 +48,8 @@ img.zoomable-image:hover,
    link at build time).                                                    */
 figure img:active,
 img.zoomable-image:active,
-.jupyter-outputs img:active,
-.cell-output img:active,
-.output img:active {
+[data-name="safe-output-image"] img:active,
+[data-name="outputs-container"] img:active {
   position: fixed;
   top: 50%;
   left: 50%;
