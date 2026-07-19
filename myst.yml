@@ -19,8 +19,13 @@ project:
       children:
         - file: statistics/skewed_distribution.ipynb
         - file: statistics/simulation.ipynb
+        - file: statistics/simulation_physical.ipynb
 site:
   template: book-theme
   # options:
   #   favicon: favicon.ico
   #   logo: site_logo.png
+
+sphinx:
+  extra_extensions:
+    - teachbooks_zoomies
