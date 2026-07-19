@@ -1,0 +1,85 @@
+/* -----------------------------------------------------------------------
+   custom.css — loaded by book-theme via `site.options.style` in myst.yml
+   Provides "click / hover to zoom" for figures & notebook output images.
+
+   Why CSS-only?
+   book-theme is a Remix/React app and does not evaluate <script> tags
+   injected via raw HTML AST nodes (React's dangerouslySetInnerHTML never
+   executes them). The only supported customization hook is a CSS file.
+   ----------------------------------------------------------------------- */
+
+/* 1. Cursor + subtle affordance on every zoomable image
+   -----------------------------------------------------
+   `figure img`         → images from MyST/MD `image` directives.
+   `.image-zoom-link`   → wrapper added by plugins/image-zoom.mjs.
+   `.jupyter-outputs img`, `.cell-output img` → matplotlib / notebook figs
+   (book-theme uses one of these class names depending on version).       */
+figure img,
+.image-zoom-link img,
+img.zoomable-image,
+.jupyter-outputs img,
+.cell-output img,
+.output img {
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transform-origin: center center;
+  border-radius: 4px;
+}
+
+/* 2. Hover: pop the image forward a little so users notice it's zoomable. */
+figure img:hover,
+.image-zoom-link img:hover,
+img.zoomable-image:hover,
+.jupyter-outputs img:hover,
+.cell-output img:hover,
+.output img:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+}
+
+/* 3. Click-and-hold: enlarge to (roughly) full viewport, centered.
+   `:active` is a pure-CSS way to get a modal-style enlargement while
+   the user presses the image. Release to dismiss. Works everywhere,
+   including inside Jupyter cell outputs (which we cannot wrap in a
+   link at build time).                                                    */
+figure img:active,
+img.zoomable-image:active,
+.jupyter-outputs img:active,
+.cell-output img:active,
+.output img:active {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 95vw;
+  max-height: 95vh;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%) scale(1);
+  background: white;
+  padding: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  z-index: 99999;
+  cursor: zoom-out;
+  border-radius: 6px;
+}
+
+/* 4. Author images wrapped in the plugin's link: clicking (not just
+   holding) opens the full-resolution image in a new tab. Make sure the
+   wrapper doesn't grow the layout.                                        */
+a.image-zoom-link {
+  display: inline-block;
+  line-height: 0;
+  text-decoration: none;
+}
+
+/* 5. Opt-out */
+img.no-zoom {
+  cursor: default !important;
+}
+img.no-zoom:hover,
+img.no-zoom:active {
+  transform: none !important;
+  box-shadow: none !important;
+  position: static !important;
+}
+

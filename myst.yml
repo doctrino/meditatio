@@ -25,6 +25,7 @@ project:
       path: plugins/image-zoom.mjs
 site:
   template: book-theme
-  # options:
-  #   favicon: favicon.ico
-  #   logo: site_logo.png
+  options:
+    style: custom.css
+    # favicon: favicon.ico
+    # logo: site_logo.png
