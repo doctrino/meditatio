@@ -1,21 +1,15 @@
 /**
  * MyST-MD JavaScript plugin: image-zoom AST helpers.
  *
- * Note: book-theme does NOT allow injecting <script> tags via raw HTML nodes
- * (React's dangerouslySetInnerHTML never executes <script>). So the actual
- * "click to zoom" visual is done via CSS, loaded through
- * `site.options.style` (see custom.css in the project root).
+ * book-theme escapes raw HTML AST nodes (renders them as text in a <span>),
+ * so plugins CANNOT execute JavaScript in the rendered page. The visual
+ * zoom effect is therefore done purely with CSS in custom.css, loaded via
+ * `site.options.style` in myst.yml.
  *
- * What this plugin does:
- *   1. Adds the class `zoomable-image` to every `image` AST node.
- *   2. Wraps user-authored `image` nodes in a `link` to the image's own URL
- *      so clicking opens the full-resolution image in a new tab. (Notebook
- *      output images are rendered by the theme's `outputs` component, not
- *      from an `image` mdast node, so they cannot be wrapped this way; the
- *      CSS still gives them hover/click zoom.)
- *   3. Skips images already inside a link, or opted-out via class `no-zoom`.
- *
- * Docs: https://mystmd.org/guide/javascript-plugins
+ * This plugin only tags `image` mdast nodes so the CSS can target them.
+ * Notebook output images (matplotlib etc.) are rendered by the theme's
+ * `outputs` component and are matched in CSS via their
+ * `[data-name="safe-output-image"]` container.
  */
 function classList(node) {
   return (node.class || '').split(/\s+/).filter(Boolean);
@@ -25,37 +19,18 @@ function addClass(node, cls) {
   if (!list.includes(cls)) list.push(cls);
   node.class = list.join(' ');
 }
-function transform(parent) {
-  if (!parent || !Array.isArray(parent.children)) return;
-  const newChildren = [];
-  for (const child of parent.children) {
-    if (
-      child &&
-      child.type === 'image' &&
-      parent.type !== 'link' &&
-      !classList(child).includes('no-zoom')
-    ) {
-      addClass(child, 'zoomable-image');
-      if (child.url) {
-        newChildren.push({
-          type: 'link',
-          url: child.url,
-          class: 'image-zoom-link',
-          children: [child],
-        });
-        continue;
-      }
-    }
-    transform(child);
-    newChildren.push(child);
+function walk(node) {
+  if (!node || typeof node !== 'object') return;
+  if (node.type === 'image' && !classList(node).includes('no-zoom')) {
+    addClass(node, 'zoomable-image');
   }
-  parent.children = newChildren;
+  if (Array.isArray(node.children)) node.children.forEach(walk);
 }
 const imageZoomTransform = {
   name: 'image-zoom',
-  doc: 'Tag image nodes with `zoomable-image` and wrap them in an "open original" link.',
+  doc: 'Tag image nodes with `zoomable-image` so custom.css can style them.',
   stage: 'document',
-  plugin: (_opts, _utils) => (tree) => transform(tree),
+  plugin: (_opts, _utils) => (tree) => walk(tree),
 };
 const plugin = {
   name: 'Image Zoom',
